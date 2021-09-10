@@ -9,7 +9,7 @@
             <h6 class="mt-0 mb-1 h6">Komunitas Codeigniter Indonesia Mengadakan Meetup</h6>
             <small class="text-secondary">23 Sep 2020 · baca 2 menit</small>
           </div>
-          <img class="rounded ml-3" src="img/E3hvGzPVgAQxefS.png" width="60" height="60">
+          <img class="rounded ml-3" src="/img/E3hvGzPVgAQxefS.png" width="60" height="60">
         </div>
       <?php endfor; ?>
     </div>
