@@ -32,9 +32,10 @@ class NewsAdmin extends BaseController
 
   // --------------------------------------------------------------------------------------------------------
 
-  public function preview($id)
+  public function preview($slug)
   {
-    $news = $this->newsModel->where('id', $id)->first();
+    // $news = $this->newsModel->where('slug', $slug)->first();
+    $news = $this->newsModel->getNews($slug);
 
     $data = [
       'news'  => $news
@@ -120,42 +121,6 @@ class NewsAdmin extends BaseController
 
   //---------------------------------------------------------------------------------------------------------
 
-  public function edit($id)
-  {
-    // ambil artikel yang akan diedit
-    // $news = new NewsModel();
-    // $data['news'] = $news->where('id', $id)->first();
-
-    // lakukan validasi data artikel
-    // $validation =  \Config\Services::validation();
-    // $validation->setRules([
-    //   'id'    => 'required',
-    //   'title' => 'required'
-    // ]);
-    // $isDataValid = $validation->withRequest($this->request)->run();
-
-    $news = $this->newsModel->where('id', $id)->first();
-
-    $data = [
-      'news'  => $news
-    ];
-
-    // jika data vlid, maka simpan ke database
-    // if ($isDataValid) {
-    //   $news->update($id, [
-    //     "title"   => $this->request->getPost('title'),
-    //     "content" => $this->request->getPost('content'),
-    //     "status"  => $this->request->getPost('status')
-    //   ]);
-    //   return redirect('admin/news');
-    // }
-
-    // tampilkan form edit
-    return view('admin/admin_edit_news', $data);
-  }
-
-  //--------------------------------------------------------------------------
-
   public function delete($id)
   {
     $this->newsModel->delete($id);
@@ -163,5 +128,58 @@ class NewsAdmin extends BaseController
     // redirect()->to('');
     return redirect('admin/news');
     // header("Location:" . base_url('admin/news'));
+  }
+
+  //---------------------------------------------------------------------------------------------------------
+
+  public function edit($slug)
+  {
+
+    $data = [
+      'validation' => \Config\Services::validation(),
+      'news'  => $this->newsModel->getNews($slug)
+    ];
+
+
+    return view('admin/admin_edit_news', $data);
+  }
+
+  //--------------------------------------------------------------------------
+
+  public function update($id)
+  {
+    $oldNews = $this->newsModel->getNews($this->request->getVar('slug'));
+    if ($oldNews['title'] == $this->request->getVar('title')) {
+      $ruleTitle = 'required';
+    } else {
+      $ruleTitle = 'required|is_unique[news.title]';
+    }
+    // validasi input
+    if (!$this->validate([
+      'title' => [
+        'rules' => $ruleTitle,
+        'errors' => [
+          'required' => 'news {field} must be filled.'
+        ]
+      ]
+    ])) {
+      $validation = \Config\Services::validation();
+      // dd($validation);
+      return redirect()->to('/admin/news/' . $this->request->getVar('slug') . '/edit')->withInput()->with('validation', $validation);
+    }
+
+    $slug = url_title($this->request->getVar('title'), '-', TRUE);
+    $this->newsModel->save([
+      "id"  => $id,
+      "title"   => $this->request->getVar('title'),
+      "slug"   => $slug,
+      "content" => $this->request->getVar('content'),
+      "status"  => $this->request->getVar('status')
+    ]);
+
+    session()->setFlashdata('pesan', 'Data berhasil diubah');
+
+    return redirect()->to('admin/news');
+    dd($this->request->getVar());
   }
 }

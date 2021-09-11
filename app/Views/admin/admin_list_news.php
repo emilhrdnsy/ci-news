@@ -33,8 +33,8 @@
             <?php endif ?>
           </td>
           <td>
-            <a href="<?= base_url('admin/news/' . $news['id'] . '/preview') ?>" class="btn btn-sm btn-info" target="_blank">Preview</a>
-            <a href="<?= base_url('admin/news/' . $news['id'] . '/edit') ?>" class="btn btn-sm btn-secondary">Edit</a>
+            <a href="<?= base_url('admin/news/' . $news['slug'] . '/preview') ?>" class="btn btn-sm btn-info" target="_blank">Preview</a>
+            <a href="<?= base_url('admin/news/' . $news['slug'] . '/edit') ?>" class="btn btn-sm btn-secondary">Edit</a>
             <!-- onclick="confirmToDelete(this) -->
             <a href="#" data-toggle="modal" data-target="#exampleModalCenter" class="btn btn-sm btn-danger">Delete</a>
           </td>

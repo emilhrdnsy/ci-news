@@ -54,7 +54,8 @@ $routes->group('admin', function ($routes) {
 	$routes->get('news/(:any)/preview', 'NewsAdmin\NewsAdmin::preview/$1');
 	$routes->add('news/new', 'NewsAdmin\NewsAdmin::create');
 	$routes->add('news/save', 'NewsAdmin\NewsAdmin::save');
-	$routes->add('news/(:segment)/edit', 'NewsAdmin\NewsAdmin::edit/$1');
+	$routes->get('news/(:segment)/edit', 'NewsAdmin\NewsAdmin::edit/$1');
+	$routes->add('news/(:segment)/update', 'NewsAdmin\NewsAdmin::update/$1');
 });
 
 // $routes->get('/article', 'Article::index');
