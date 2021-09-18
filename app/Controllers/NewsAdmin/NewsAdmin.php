@@ -95,9 +95,17 @@ class NewsAdmin extends BaseController
     // validasi input
     if (!$this->validate([
       'title' => [
-        'rules' => 'required',
+        'rules' => 'required|is_unique[news.title]',
         'errors' => [
-          'required' => 'news {field} must be filled.'
+          'required' => 'news {field} must be filled.',
+          'is_unique' => 'news {field} have been added. change the title...'
+        ]
+      ],
+      'content' => [
+        'rules' => 'required|is_unique[news.content]',
+        'errors' => [
+          'required' => 'news {field} must be filled.',
+          'is_unique' => 'news {field} must been different with another news.'
         ]
       ]
     ])) {
@@ -116,6 +124,7 @@ class NewsAdmin extends BaseController
 
     session()->setFlashdata('pesan', 'Data berhasil ditambahkan');
 
+    // dd($this->request->getVar());
     return redirect()->to('admin/news');
   }
 
@@ -154,12 +163,27 @@ class NewsAdmin extends BaseController
     } else {
       $ruleTitle = 'required|is_unique[news.title]';
     }
+
+    if ($oldNews['content'] == $this->request->getVar('content')) {
+      $ruleContent = 'required';
+    } else {
+      $ruleContent = 'required|is_unique[news.content]';
+    }
+
     // validasi input
     if (!$this->validate([
       'title' => [
         'rules' => $ruleTitle,
         'errors' => [
-          'required' => 'news {field} must be filled.'
+          'required' => 'news {field} must be filled.',
+          'is_unique' => 'news {field} have been added. change the title...'
+        ]
+      ],
+      'content' => [
+        'rules' => $ruleContent,
+        'errors' => [
+          'required' => 'news {field} have been filled',
+          'is_unique' => 'news {field} must been different with another news.'
         ]
       ]
     ])) {
@@ -180,6 +204,6 @@ class NewsAdmin extends BaseController
     session()->setFlashdata('pesan', 'Data berhasil diubah');
 
     return redirect()->to('admin/news');
-    dd($this->request->getVar());
+    // dd($this->request->getVar());
   }
 }
